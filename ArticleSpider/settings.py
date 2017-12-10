@@ -14,7 +14,7 @@ BOT_NAME = 'ArticleSpider'
 SPIDER_MODULES = ['ArticleSpider.spiders']
 NEWSPIDER_MODULE = 'ArticleSpider.spiders'
 
-
+import os
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ArticleSpider (+http://www.yourdomain.com)'
 
@@ -64,9 +64,18 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    # 'ArticleSpider.pipelines.JsonExporterPipleline': 1,
+    # # 'scrapy.pipelines.images.ImagesPipeline': 1,
+    # 'ArticleSpider.pipelines.ArticleImagePipeline': 2,
+    'ArticleSpider.pipelines.MysqlTwistedPipline': 1,
+
+}
+IMAGES_URLS_FIELD = "front_image_url"
+
+project_dir = os.path.abspath(os.path.dirname(__file__))
+IMAGES_STORE = os.path.join(project_dir, 'images')
+
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -88,3 +97,9 @@ ROBOTSTXT_OBEY = False
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+
+MYSQL_HOST = "127.0.0.1"
+MYSQL_DBNAME = "article_spider"
+MYSQL_USER = "root"
+MYSQL_PASSWORD = "zqx123456"

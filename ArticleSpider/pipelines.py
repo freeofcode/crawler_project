@@ -7,8 +7,9 @@
 
 import codecs
 import json
-# import MySQL
-# import MySQLdb.cursors
+import datetime
+import MySQLdb
+import MySQLdb.cursors
 
 from scrapy.exporters import JsonItemExporter
 from scrapy.pipelines.images import ImagesPipeline
@@ -23,25 +24,33 @@ class JsonWithEncodingPipeline(object):
     def __init__(self):
         self.file = codecs.open('article.json', 'w', encoding="utf-8")
     def process_item(self, item, spider):
-        lines = json.dumps(dict(item), ensure_ascii=False) + "\n"
+        try:
+            if isinstance(item["create_date"], datetime.date):
+                item["create_date"] = str(item["create_date"])
+            lines = json.dumps(dict(item), ensure_ascii=False) + "\n"
+        except Exception as e:
+            pass
         self.file.write(lines)
         return item
     def spider_closed(self, spider):
         self.file.colse()
 
-# class MysqlPipline(object):
-#     # 采用同步的机制写 mysql
-#     def __init__(self):
-#         self.conn = MySQLdb.connect('192.168.0.106', 'root', 'root', 'article_spider', charset="utf-8", use_unicode=True)
-#         self.cursor = self.conn.cursor()
-#     def process_item(self, item, spider):
-#         insert_sql = """
-#             insert into jobble_article(title, url, create_date, fav_nums)
-#             VALUES (%s, %s, %s, %s)
-#         """
-#
-#         self.cursor.execute(insert_sql, (item["title"], item["url"], item["create_date"], item["fav_nums"]))
-#         self.conn.commit()
+class MysqlPipline(object):
+    # 采用同步的机制写 mysql
+    def __init__(self):
+        self.conn = MySQLdb.connect('127.0.0.1', 'root', 'zqx123456', 'article_spider', charset="utf8", use_unicode=True)
+        self.cursor = self.conn.cursor()
+    def process_item(self, item, spider):
+        insert_sql = """
+            insert into jobbole_article(title, url, create_date, fav_nums)
+            VALUES (%s, %s, %s, %s)
+        """
+
+        try:
+            self.cursor.execute(insert_sql, (item["title"], item["url"], item["create_date"], item["fav_nums"]))
+        except Exception as e:
+            pass
+        self.conn.commit()
 
 class MysqlTwistedPipline(object):
     def __init__(self, dbpool):
@@ -49,13 +58,13 @@ class MysqlTwistedPipline(object):
     @classmethod
     def from_settings(cls, settings):
         dbparms = dict(
-            # host = settings["MYSQL_HOST"],
-            # db = settings["MYSQL_DBNAME"],
-            # user = settings["MYSQL_USER"],
-            # passwd = settings["MYSQL_PASSWORD"],
-            # charset = 'utf8',
-            # cursorclass = MySQLdb.cursors.DictCursor,
-            # use_unicode=True,
+            host = settings["MYSQL_HOST"],
+            db = settings["MYSQL_DBNAME"],
+            user = settings["MYSQL_USER"],
+            passwd = settings["MYSQL_PASSWORD"],
+            charset = 'utf8',
+            cursorclass = MySQLdb.cursors.DictCursor,
+            use_unicode=True,
         )
         dbpool = adbapi.ConnectionPool("MySQLdb", **dbparms)
         return cls(dbpool)

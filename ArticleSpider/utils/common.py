@@ -8,6 +8,14 @@ def get_md5(url):
     m.update(url)
     return m.hexdigest()
 
+def get_md5(url):
+    if isinstance(url, str):
+        url = url.encode("utf-8")
+    m = hashlib.md5()
+    m.update(url)
+    return m.hexdigest()
+
+
 def extract_num(text):
     #从字符串中取出数字
     match_re = re.match(",*?(\d+).*", text)
