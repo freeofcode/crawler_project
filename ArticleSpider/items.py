@@ -71,12 +71,17 @@ class JobBoleArticleItem(scrapy.Item):
     content = scrapy.Field()
 
     def get_insert_sql(self):
-        insert_sql = """
-            insert into jobbole_article(title, url, create_date, fav_nums)
-            VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE content=VALUES(fav_nums)
-        """
-
-        params = (self["title"], self["url"], self["create_date"], self["fav_nums"])
+        try:
+            insert_sql = """
+                insert into jobbole_article(title, create_date, url, url_object_id, front_image_url, parise_nums, comment_nums, fav_nums, tags, content)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE content=VALUES(fav_nums)
+            """
+        except Exception as e:
+            pass
+        try:
+            params = (self["title"], self["create_date"], self["url"], self["url_object_id"], self["front_image_url"], self["parise_nums"], self["comment_nums"], self["fav_nums"], self["tags"], self["content"])
+        except Exception as e:
+            pass
         return insert_sql, params
 
     # def save_to_es(self):

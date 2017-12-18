@@ -5,7 +5,7 @@ import datetime
 from scrapy.http import Request
 from urllib import parse
 import re
-from scrapy.xlib.pydispatch import dispatcher
+# from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
 from ArticleSpider.items import JobBoleArticleItem, ArticleItemLoader
 from ArticleSpider.utils.common import get_md5
@@ -39,8 +39,8 @@ class JobboleSpider(scrapy.Spider):
             # yield Request(url=parse.urljoin(response.url, post_url), meta={"front_image_url": image_url})
             # break
         next_url = response.css(".next.page-numbers::attr(href)").extract_first("")
-        # if next_url:
-        #     yield Request(url=next_url, callback=self.parse)
+        if next_url:
+            yield Request(url=next_url, callback=self.parse)
 
     def parse_detail(self, response):
         # 提取文章的具体字段
