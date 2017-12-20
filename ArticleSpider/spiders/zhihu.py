@@ -111,6 +111,7 @@ class ZhihuSpider(scrapy.Spider):
 
         if not is_end:
             yield scrapy.Request(next_url, headers=self.headers, callback=self.parse_answer)
+
     def start_requests(self):
         return [scrapy.Request("https://www.zhihu.com/#signin", headers=self.headers, callback=self.login)]
 
