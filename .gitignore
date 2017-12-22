@@ -1,8 +1,6 @@
 
 # ignore invalid file and not use file
 
-scrapy.cfg
-
 .idea/
 
 ArticleSpider/__pycache__
