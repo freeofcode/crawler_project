@@ -1,0 +1,13 @@
+
+# ignore invalid file and not use file
+
+scrapy.cfg
+
+.idea/
+
+ArticleSpider/__pycache__
+
+ArticleSpider/spiders/__pycache__
+
+ArticleSpider/utils/__pycache__
+
