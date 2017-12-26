@@ -18,7 +18,7 @@ class ZhihuSpider(scrapy.Spider):
 
     star_answer_url = "https://www.zhihu.com/api/v4/questions/{0}/answers?sort_by=default&include=data%5B%2A%5D.is_normal%2Cis_sticky%2Ccollapsed_by%2Csuggest_edit%2Ccomment_count%2Ccollapsed_counts%2Creviewing_comments_count%2Ccan_comment%2Ccontent%2Ceditable_content%2Cvoteup_count%2Creshipment_settings%2Ccomment_permission%2Cmark_infos%2Ccreated_time%2Cupdated_time%2Crelationship.is_author%2Cvoting%2Cis_thanked%2Cis_nothelp%2Cupvoted_followees%3Bdata%5B%2A%5D.author.is_blocking%2Cis_blocked%2Cis_followed%2Cvoteup_count%2Cmessage_thread_token%2Cbadge%5B%3F%28type%3Dbest_answerer%29%5D.topics&limit={1}&offset={2}"
     headers = {
-        "HOST": "www.zhihu.com",
+        "HOST": "www.zhihu.com", 
         "Referer": "https://www.zhizhu.com",
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0"
     }
@@ -64,7 +64,7 @@ class ZhihuSpider(scrapy.Spider):
             item_loader.add_css("watch_user_num", ".NumberBoard-value::text")
             item_loader.add_css("topics", ".QuestionHeader-topics .Popover div::text")
 
-            question_item = item_loader.load_item()
+            question_item=item_loader.load_item()
         else:
 
             match_obj = re.match("(.*zhihu.com/question/(\d+))(/|$).*", response.url)
